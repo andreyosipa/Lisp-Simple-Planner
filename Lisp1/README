@@ -1,0 +1,99 @@
+Lisp Problem Set 1
+Author: Andrii Osipa
+
+Functions:
+1.(unifier lst1 lst2)
+Input:  two lists of equal length, where first contains only
+		constants or variables and second constants only.
+Output: list of pairs (?variable constant) or NIL if input is 
+		wrong or NIL.
+Algorithm: Check if all the inputs are correct. Then pair elements
+together and remove elements of form (const const)(Note: when input
+is correct pair if pair is (a a) is in new list, where a may be 
+variable or const then it always only const).
+
+2.(apply-unifier unif lit)
+Input:  list of unifiers(list of pairs (?var const)) and list 
+		with correct literal. Correct literal must have form 
+		(fun_name literal/variable/constant+).
+Output: Substitution of variables with corresponding 
+		constants or NIL if input is wrong or NIL.
+Algorithm: Check if input is correct. Then take first pair (var const)
+and apply it to the literal by looping through all elements in literal 
+after first and if in needed apply recursively (e.g. if literal is 
+(add ?x (add ?y ?z))) via apply-unifier with only one pair as unifier 
+and subliteral. Then continue process for next pair from the unifs 
+input and literal with already applied first pair. And so on...
+
+3.(extract-constants lits)
+Input:  list of states or premises. (In other words: list of literals 
+		with constants and variables).
+Output: List of all individual constants names or NIL if there 
+		is no individual constants or input is wrong.
+Algorithm: Check input. There are possible next cases: it is wrong; it 
+is one literal; it is list of literals. 
+	If it is one literal then just go through elements of the 
+list(literal) and if it is not variable and not literal - pick 
+constants; if it is literal apply same function recursively. Then 
+merge all results and then delete duplicates. 
+	If it is a list of literals then just do previous algorithm for 
+each of them and delete duplicates in the end.
+
+4.(prune-unifiers unifs)
+Input:  List of lists of pairs (?var const).
+Output: List of lists of pairs (?var const) such that lists 
+		with pairs that have same constants for different 
+		variables are excluded or NIL if input is wrong.
+Algorithm: check input. Then there may be next cases: input is wrong; 
+it is individual unifier(list of pairs (var const)); it is list of 
+unifiers.
+	If it is individual unifier then delete from the list pairs that 
+assign same constants and compare this list with list where deleted 
+all completely same pairs(same variable and same constant). If these 
+lists are same, then there are no assignments of same variable to 
+different constants and return same unifier. Else return NIL.
+	If it is a list of unifiers then do same procedure for each 
+element of this list.
+
+Test functions:
+For all next functions
+input: none
+output: NIL
+
+1.(test-unifier)
+Strategy:Test for function unifier.
+Cases #1-4 are from task list. 
+Cases #5-6 are about wrong input: vars in second list and lists in 
+list. 
+Cases #7-8 are about wrong input - wrong length of input. 
+Cases #9-10: positive examples.)
+
+2.(deftest test-apply-unifier)
+Strategy:Test for function apply-unifier. 
+Cases #1-4 are from task list. 
+Cases #5-6 are about complex literals. 
+Cases #7-8 are about empty input. 
+Cases #9-10 have wrong literal and wrong unifiers list.
+
+3.(test-extract-constants)
+Strategy:Test for extract-constants. 
+Case #1: NIL input. 
+Cases #2-3: simple expression without constants and same expression in 
+list. 
+Cases #4-5: simple expressions with consts and vars. 
+Cases #6-8: lists of literals without variables. 
+Case #9: list of complex expressions with variables and constants.
+
+4.(deftest test-prune-unifiers)
+Strategy:Test for prune-unifiers. 
+Case #1: NIL input. 
+Cases #2-3: wrong inputs. 
+Case #4: single wrong unifier. 
+Case #5: single good unifier. 
+Case #6: list of unifiers with wrong unifier. 
+Case #7: list of good unifiers.
+
+5.(deftest test-lisp1)
+Strategy:This program runs all the test cases for all the functions 
+from the Lisp Problem Set 1. 
+Test framework:Peter Seibel "Practical Common Lisp", Chapter 9

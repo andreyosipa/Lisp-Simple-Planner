@@ -1,0 +1,84 @@
+Lisp Problem Set 3
+Author: Andrii Osipa
+
+
+Functions:
+1.(store-transition (state action new_state))
+Input: state 	 - list of ground predicates(will not reject list 
+				   with not only ground predicates).
+	   action    - list that represents operator application to 
+				   some constants.
+	   new_state - list of ground predicates(...)
+Output: new state added to hashtable with states or 
+  		NIL otherwise.
+Comments: every new state that given is sorted in accordance with < 
+relation for strings(list is represented as list of strings). Then if 
+key corresponding to this list of strings appears in hashtable - 
+modify record in hashtable. Otherwise make new.
+
+2.(successor-state (state operator operator_instance))
+Input: state             - state list.
+	   operator          - list with 4 elements defined in is-operator? 
+					       function.
+	   operator_instance - unifier for operator's variables.
+Output: new state added to hashtable with states.
+Comments: applying unifier to effects of operator and then creating 
+new state from old one by concatenating both states and removing 
+elements that are negated in effects but appear in original state, 
+adding all new positive predications from effects and maintaining rest 
+of original state.
+
+3.(successor-states (state operators)
+Input: state     - state list.
+	   operators - list of operators(list with 4 elements 
+				   defined in is-operator? function).
+Output: new states added to hashtable with states.
+Comments: looping through operators and finding their instances then 
+applying succesor state for triples (state, operator, instance) and 
+concatenating results together.
+
+4.(check-goal (state goal))
+Input:  state.
+Output: T if goal is a subset of state and NIL otherwise.
+Comments: for every element of goal list checking if it appears in 
+state list.
+
+5.(find-plan (operators initial_state goal))
+Input: operators     - list of operators(list with 4 elements 
+					   defined in is-operator? function).
+	   initial_state - state.
+	   goal          - state to be achieved.
+Output: new states added to hashtable with states.
+Comments: for each state in open_list replace it with list of new 
+states and then concate this list of lists of states. Then check if 
+there is a state that satisfies goal. It yes - stop loop and trace 
+back path for this state from hashtable.
+
+
+Test functions.
+Test framework:Peter Seibel "Practical Common Lisp", Chapter 9.
+1.(deftest test-store-transition)
+Tests for store-transition function. Cases #1-4: bad or NIL input. 
+Cases #5,7: adding new state. Case #6: adding existing state. 
+
+(deftest test-successor-state)
+Tests for successor-state function. Cases #1-2: bad or NIL input. 
+Cases #3: adding new state, positive case. Case #4: adding existing 
+state. Case #5: bad unifier. Case #6: adding new state, positive case. 
+
+(deftest test-successor-states)
+Tests for successor-states function. Cases #1-3: bad or NIL input. 
+Case #4: positive case with new states. Case #5: positive case with 
+only one new state from only one operator. 
+
+(deftest test-check-goal)
+Tests for successor-states function. Cases #1-3: bad or NIL input. 
+Cases #4-8: positive cases. 
+
+(deftest test-find-plan)
+Tests for find-plan function. Cases #1-3: NIL/bad input. Case #2-4: 
+positive cases with achievable and not-achievable goals. 
+
+(deftest test-lisp3)
+This program runs all the test cases for all the functions from the 
+Lisp Problem Set 3. 

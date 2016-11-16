@@ -1,0 +1,91 @@
+Lisp Problem Set 1
+Author: Andrii Osipa
+
+Functions:
+1.(distinct-bindings vars constants)
+Input:  two lists: variables and constants.
+Output: list of all possible variable assignments.
+Algorithm: If the inputs are good then we generate all possible 
+permutations of the list of constants and then use unifier function 
+from Lisp1 Assignment for list of variables and sublist(starting from 
+position 0) of the constants permutaion that have same count of 
+elements that variables have.
+
+2.(literal-unifiers literal state constants)
+Input:  list of literals;
+        list of states;
+        list of constants.
+Output: list of all variable assignments that satisfy literal
+        with current states.
+Algorithm: If the input is good then we have two cases: literal is 
+positive or literal is negative. Then in each case we have two 
+possibilities: if literal has variables and if it has no variables. 
+In second case we check if literal belongs to the states. Otherwise 
+we generate all possible variable assignmebts for variables in literal
+and substitute them to the literal. If literl with substituted 
+variables is in states then add that variable binding to the answer 
+and continue the process. Algorithm for the case with negative literal 
+is the same, except we check if the literal is not in the states.
+
+3'.(preconds-instances preconds state constants)
+Input:  list of preconditions(=literals);
+        list of states;
+        list of constants.
+Output: list of all variable assignments that satisfy literal
+        with current states.
+Algorithm: Loop with mapcar through all bindings for all variables in 
+preconds and all constants. Then for fixed binding loop through every 
+condition in precondition and apply variable assignment to it and 
+check whether it in states (or not for negative). Then we get list of 
+T(s) and NIL(s) of same length as preconds and if all elements in it 
+are T it means that binding satisfies all preconditions and we add 
+that binding to the answer.
+
+3.(operator-instances operator state)
+Input:  operator(list with 4 parts...)
+        states list.
+Output: list of all variable assignments that are possible to run
+        operator on.
+Algorithm: If the input is good then run preconds-instances for the 
+corresponding parts of operator as its input. And preconditions are 
+sorted such that ones without variables go first as they are easier 
+to check. Constants are extracted from operator preconditions and 
+states.
+
+Test functions.
+Test framework:Peter Seibel "Practical Common Lisp", Chapter 9.
+
+1.(test-distinct-bindings)
+Strategy: Test function for distinct-bindings. Cases #1-3 are with 
+good input variables and constants. Case #4 has more variables then 
+constants, so there is no possible bindings as we do not have one 
+value assigned to different variables. Cases #5-6 have NIL(s) in 
+input. Cases #7-10 have some bad input.
+
+2.(test-is-state-lst?)
+Strategy: Test for function is-state-lst?. First 3 cases are well 
+formed lists of states. Case #4 contains minor mistake - variable 
+inside one of states. Case #5 is some bad list. Case #6 is not a list. 
+Case #7 is NIL.
+
+3.(test-is-operator?)
+Strategy: Test for function is-operator?. Cases #1-4 are some correct 
+examples from emqail with task clarifications. Cases #5-9 are negative 
+examples with mistakes in one of the parts of the definition of an 
+operator.
+
+4.(test-literal-unifiers)
+Strategy: Test function for literal-unifiers. Cases 1-6 are from email 
+with assignment clarifications. Cases 7-14 are about bad inputs or 
+nil(s) in inputs.
+
+5.(test-operator-instances)
+Strategy: Function to test operator-instances. Case #1 is from 
+assignment examples. Cases #2-6 are about bad input or nil(s) in the 
+input. Cases #7-12 have operators from email with domains and some 
+imagined state.
+
+6.(test-lisp2)
+Strategy: This program runs all the test cases for all the functions 
+from the Lisp Problem Set 2 and some additional functions used in the 
+main ones. 
